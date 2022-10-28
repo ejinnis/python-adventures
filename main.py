@@ -12,7 +12,7 @@ import sys
 cheatsEnabled = 1
 
 #startingSect: Choose section to start in, from 1 to 6.
-startingSect = 1
+startingSect = 3
 
 
 #return method for invalid options. saves time typing the same code over and over.
@@ -296,7 +296,7 @@ def threeNorth():
   if choice == "fight":
     if inv(0,"list",0,0,0)[0] == "sword":
       roll = dice(5)
-      print("You decide to stay and fight. Good thing you bought that sword, because you only need more than 5 on the dice to win. You rolled: " + roll[0])
+      print("You decide to stay and fight. Good thing you bought that sword, because you only need more than 5 on the dice to win. You rolled: " + str(roll[0]))
       if roll[1] == True:
         print("You won! -15HP")
         hp(0,"edit",-15)
@@ -305,7 +305,7 @@ def threeNorth():
         gameOver()
     if inv(0,"list",0,0,0)[0] == "branch":
       roll = dice(15)
-      print("You decide to stay and fight. You only have a branch and your bow. You need more than 15 on the dice to win. You rolled: " + roll[0])
+      print("You decide to stay and fight. You only have a branch and your bow. You need more than 15 on the dice to win. You rolled: " + str(roll[0]))
       if roll[1] == True:
         print("You won! -30HP, -4 arrows")
         hp(0,"edit",-15)
@@ -325,9 +325,40 @@ def threeIce():
     invalid(threeIce)
 
 def threeGerudo():
-  choice = i
-        
-      
+  choice = input("You come across a walled town called Gerudo. It's leader is sitting on a throne straight ahead from the entrance. She notices you and comes running, screaming \"LINK!! YOU'RE BACK!\". She gives you a big hug and asks where you've been. You don't know, and you ask her who she is. She says her name is Urbosa. You ask about the treasure and she asks you to follow her. Do you go with? yes, no \n")
+  if choice == "no":
+    print("You run away from the strange woman, back the way you came. You trip and fall into a pit of quicksand. You die. \n")
+    gameOver()
+  if choice == "yes":
+    threeBats()
+  else:
+    invalid(threeGerudo)
+
+def threeBats():
+  choice = input("You follow her into a room underground, and she turns on the lights. 10 massive bats hang from the ceiling, and start to get angry. Are you ready to fight? yes,no \n")
+  if choice == "yes":
+    if inv(0,"list",0,0,0)[0] == "sword":
+      print("Begin boss fight. The dice will roll repeatedly until you either win or die. There are 10 bats to kill, and you need more than 10 per roll to kill one. You currently have " + hp(0,"list",0) + " HP, and Urbosa currently has " + hp(2,"list",0) + " HP. \n")
+      i = 10
+      while hp(0,"list",0) > 0 or i > 0:
+        roll = dice(10)
+        print("You rolled " + str(roll[0]))
+        if roll[1] == False:
+          hp(0,"edit",-10)
+          print("The bat lives! -10 HP")
+        if roll[1] == True:
+          print("The bat dies! Remaining bats: " + str(i))
+          i = i - 1
+      if hp(0,"list",0) == 0:
+        gameOver()
+      if i == 0:
+        print("YOU WIN! You took a total damage of " + str(hp(0,"list",0)) + " HP.")
+        threeEnd()
+  if choice == "no":
+    print("You run back to the oasis to prepare.")
+    threeStart()
+  else:
+    invalid(threeBats)
 #oneStart() <<< what will actually be called in production
 
 if startingSect == 1:
