@@ -315,7 +315,17 @@ def threeNorth():
         gameOver()
 
 def threeIce():
-  
+  choice = input("You come across an underground bunker with a small man selling ice.  You ask him where you can find some treasure. He laughs and directs you west to a town called Gerudo. Do you follow her advice? yes, no \n")
+  if choice == "no":
+    print("You walk south until you reach a massive dust storm. You cannot see or breathe. You die. \n")
+    gameOver()
+  if choice == "yes":
+    threeGerudo()
+  else:
+    invalid(threeIce)
+
+def threeGerudo():
+  choice = i
         
       
 #oneStart() <<< what will actually be called in production
