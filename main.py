@@ -12,7 +12,7 @@ import sys
 cheatsEnabled = 1
 
 #startingSect: Choose section to start in, from 1 to 6.
-startingSect = 1
+startingSect = 5
 
 
 #return method for invalid options. saves time typing the same code over and over.
@@ -348,61 +348,63 @@ def fiveStart():
   else:
     invalid(fiveStart)
 
-# Cabin path
-
-### FIX CABIN PATH
+# Cabin path part uno
 def cabinPath():
-    # boards = true means the boards are still up. boards = false means the boards are broken
-    boards = True
-    while True:
-        if boards == False:
-            break
-        elif boards == True:
-            path = input(
-                "\n The cabin door seems to be boarded shut. The windows seem to be boarded shut too. What do you want to do?\n")
-            if "break" in path.lower():
-                while True:
-                    breakBoard = input("Break boards with what? \n")
-                    if "fist" in breakBoard.lower():
+  path = input(
+    "\n The cabin door seems to be boarded shut. The windows seem to be boarded shut too. What do you want to do?\n"
+              )
+  if "break" in path.lower():
+    breakBoards()
+  elif "leave" in path.lower():
+    print(
+      "\nLeaving the cabin\n"
+    )
+    fiveStart()
+  else:
+    invalid(cabinPath)
+
+def breakBoards():
+  # Change "otherweapon"
+  breakBoard = input(
+    "\nBreak it with what?\n FIST \n \n OTHERWEAPON \n"
+  )
+  if "fist" in breakBoard.lower():
                         roll = dice(15)
                         if roll[1] == True:
                             print(
                                 "The boards have been broken. \n You have rolled: " + str(roll[0]))
-                            boards = False
-                            break
+                            print(
+                              "\nEntering the cabin\n"
+                            )
+                            cabinPathPartTwo()
+                          
                         elif roll[1] == False:
                             print(
-                                "The boards haven't been broken. \n You have rolled: " + str(roll[0]))
+                                "The boards haven't been broken. Try again. \n You have rolled: " + str(roll[0]))
                             print("-1 HP")
                             rollTwo = dice(20)
                             if rollTwo[1] == True:
                                 print("You hit your " + breakBoard.lower(
                                 ) + " too hard, which cut it and broke it. You slowly bled to death. Come on man.")
                                 gameOver()
-                            continue
+                            breakBoards()
                     # !!! make sure to change "otherweapon" !!!
-                    elif "otherweapon" in breakBoard.lower():
-                        roll = dice(10)
-                        if roll[1] == True:
+                        elif "otherweapon" in breakBoard.lower():
+                          roll = dice(10)
+                          if roll[1] == True:
                             print(
                                 "The boards have been broken. \n You have rolled: " + str(roll[0]))
-                            boards = False
-                            
-                            break
+                            print(
+                              "\nEntering the cabin.\n"
+                            )
+                            cabinPathPartTwo()
                         elif roll[1] == False:
                             print(
                                 "The boards haven't been broken, try again. \n You have rolled: " + str(roll[0]))
-                            continue
-                    else:
-                        print("Not valid item, try again")
-                        continue
-            else:
-                print("Not a valid thing to do, try again")
-                continue
-        else:
-            print("not valid, try again")
-            continue
-
+                            breakBoards()
+  else:
+    invalid(breakBoards)
+                          
 ### FIX CABIN PATH PART TWO
 def cabinPathPartTwo():
   while True:
@@ -431,7 +433,7 @@ def cabinPathPartTwo():
         while True:
           if path == True:
             enterDoor = input(
-            "Are you going through the other door or not?\n YES \n \n NO \n")
+            "Are you going through the doorframe?\n YES \n \n NO \n")
             if "yes" in enterDoor:
               print(
                "entering the door")
@@ -450,19 +452,13 @@ def cabinPathPartTwo():
     else:
       continue
 
-
+# Cans - They deal either -5 or +5 HP
 def cans():
   print("Theses are the cans, make them later")
 
-#pathFive = fiveStart()
-# if  pathFive == True:
-#print("Cabin time")
-#cabinPath()
-#cabinPathPartTwo()
 
 # Lake Path
-# elif pathFive == False:
-#print("Lake time")
+
         
       
 #oneStart() <<< what will actually be called in production
