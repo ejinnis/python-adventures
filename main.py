@@ -9,10 +9,10 @@ import sys
 #debug settings, remove on completion. allows selection of section, and bypassing RNG.
 
 #cheatsEnabled: 0 = none, 1 = always win dice, 2 = always lose dice
-cheatsEnabled = 1
+cheatsEnabled = 0
 
 #startingSect: Choose section to start in, from 1 to 6.
-startingSect = 3
+startingSect = 1
 
 
 #return method for invalid options. saves time typing the same code over and over.
@@ -22,15 +22,15 @@ def invalid(method):
 
 
 #game over screen
-def gameOver():
+def gameOver(section):
   hasDied = True
-  choice = input("YOU DIED! Good job. Do you want to retry or quit? \n")
+  choice = input("YOU DIED! L bozo. Do you want to retry or quit? \n")
   if choice == "retry":
-    oneStart()
+    section
   if choice == "quit":
     sys.exit()
   else:
-    invalid(gameOver)
+    invalid(gameOver(section))
   return hasDied
 
 
@@ -120,7 +120,7 @@ def hp(i, funct, value):
   if funct == "edit":
     health[i] = health[i] + value
   if health[i] <= 0:
-    gameOver()
+    gameOver(oneStart)
 
 
 #======SECTION ONE======
@@ -179,7 +179,7 @@ def oneNorthOne():
 #go north twice
 def oneNorthTwo():
   print("You fell off the cliff.")
-  gameOver()
+  gameOver(oneStart)
 
 
 #======SECTION TWO======
@@ -204,7 +204,7 @@ def twoStart():
     print(
       "You got distracted while running and ran right off the cliff. You die. L Bozo."
     )
-    gameOver()
+    gameOver(twoStart)
   if choice == "use branch":
     if (inv(0, "list", 0, 0, 0)[0] == "branch"):
       roll = dice(20)
@@ -212,7 +212,7 @@ def twoStart():
         "You fight back with a tree branch. You must get 20 on the dice to survive. \n You rolled: "
         + str(roll[0]))
       if roll[1] == False:
-        gameOver()
+        gameOver(twoStart)
       if roll[1] == True:
         print("\nYou barely survived. -40HP, +10 arrows from their loot.")
         hp(0, "edit", -40)
@@ -224,7 +224,7 @@ def twoStart():
       "You fight back with your bow and arrows. You must get at least 5 on the dice to survive. \n You rolled: "
       + str(roll[0]))
     if roll[1] == False:
-      gameOver()
+      gameOver(twoStart)
     if roll[1] == True:
       print("\nYou survived! -20HP, -2 arrows.")
       hp(0, "edit", -20)
@@ -287,7 +287,7 @@ def threeTree():
 
 def threeSouth():
   print("You walk south until you reach a massive dust storm. You cannot see or breathe. You die. \n")
-  gameOver()
+  gameOver(threeStart)
 
 def threeNorth():
   choice = input("You encounter the ruins of an ancient building. It is guarded by monsters that look hungry. What do you do? run back, fight \n")
@@ -302,7 +302,7 @@ def threeNorth():
         hp(0,"edit",-15)
         threeIce()
       if roll[1] == False:
-        gameOver()
+        gameOver(threeStart)
     if inv(0,"list",0,0,0)[0] == "branch":
       roll = dice(15)
       print("You decide to stay and fight. You only have a branch and your bow. You need more than 15 on the dice to win. You rolled: " + str(roll[0]))
@@ -312,13 +312,15 @@ def threeNorth():
         inv(0,"edit","item2","arrow",8)
         threeIce()
       if roll[1] == False:
-        gameOver()
+        gameOver(threeStart)
+  else:
+    invalid(threeNorth)
 
 def threeIce():
   choice = input("You come across an underground bunker with a small man selling ice.  You ask him where you can find some treasure. He laughs and directs you west to a town called Gerudo. Do you follow her advice? yes, no \n")
   if choice == "no":
     print("You walk south until you reach a massive dust storm. You cannot see or breathe. You die. \n")
-    gameOver()
+    gameOver(threeStart)
   if choice == "yes":
     threeGerudo()
   else:
@@ -328,7 +330,7 @@ def threeGerudo():
   choice = input("You come across a walled town called Gerudo. It's leader is sitting on a throne straight ahead from the entrance. She notices you and comes running, screaming \"LINK!! YOU'RE BACK!\". She gives you a big hug and asks where you've been. You don't know, and you ask her who she is. She says her name is Urbosa. You ask about the treasure and she asks you to follow her. Do you go with? yes, no \n")
   if choice == "no":
     print("You run away from the strange woman, back the way you came. You trip and fall into a pit of quicksand. You die. \n")
-    gameOver()
+    gameOver(threeStart)
   if choice == "yes":
     threeBats()
   else:
@@ -338,22 +340,23 @@ def threeBats():
   choice = input("You follow her into a room underground, and she turns on the lights. 10 massive bats hang from the ceiling, and start to get angry. Are you ready to fight? yes,no \n")
   if choice == "yes":
     if inv(0,"list",0,0,0)[0] == "sword":
-      print("Begin boss fight. The dice will roll repeatedly until you either win or die. There are 10 bats to kill, and you need more than 10 per roll to kill one. You currently have " + hp(0,"list",0) + " HP, and Urbosa currently has " + hp(2,"list",0) + " HP. \n")
+      print("Begin boss fight. The dice will roll repeatedly until you either win or die. There are 10 bats to kill, and you need more than 10 per roll to kill one. You currently have " + str(hp(0,"list",0)) + " HP, and Urbosa currently has " + str(hp(2,"list",0)) + " HP. \n")
       i = 10
-      while hp(0,"list",0) > 0 or i > 0:
-        roll = dice(10)
-        print("You rolled " + str(roll[0]))
-        if roll[1] == False:
-          hp(0,"edit",-10)
-          print("The bat lives! -10 HP")
-        if roll[1] == True:
-          print("The bat dies! Remaining bats: " + str(i))
-          i = i - 1
-      if hp(0,"list",0) == 0:
-        gameOver()
-      if i == 0:
-        print("YOU WIN! You took a total damage of " + str(hp(0,"list",0)) + " HP.")
-        threeEnd()
+      while hp(0,"list",0) > 0:
+        while i >= 0:
+          roll = dice(10)
+          print("You rolled " + str(roll[0]))
+          if roll[1] == False:
+            hp(0,"edit",-10)
+            print("The bat lives! -10 HP")
+          if roll[1] == True:
+            print("The bat dies! Remaining bats: " + str(i))
+            i = i - 1
+        if hp(0,"list",0) == 0:
+          gameOver(threeStart)
+        if i <= 0:
+          print("YOU WIN! You took a total damage of " + str(hp(0,"list",0)) + " HP.")
+          threeEnd()
   if choice == "no":
     print("You run back to the oasis to prepare.")
     threeStart()
