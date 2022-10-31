@@ -5,11 +5,16 @@
 #import le libraries
 import random
 import sys
-
+import time
+def delprint(text,delay_time): 
+  for character in text:      
+    sys.stdout.write(character) 
+    sys.stdout.flush()
+    time.sleep(delay_time)
 #debug settings, remove on completion. allows selection of section, and bypassing RNG.
 
 #cheatsEnabled: 0 = none, 1 = always win dice, 2 = always lose dice
-cheatsEnabled = 0
+cheatsEnabled = 1
 
 #startingSect: Choose section to start in, from 1 to 6.
 startingSect = 1
@@ -21,9 +26,12 @@ def invalid(method):
   method()
 
 
+hasDied = 0
+
+
 #game over screen
 def gameOver(section):
-  hasDied = True
+  hasDied = 1
   choice = input("YOU DIED! L bozo. Do you want to retry or quit? \n")
   if choice == "retry":
     section
@@ -48,14 +56,62 @@ def dice(winReq):
   return roll, diceResult
 
   #win conditioning
-  def endSection(section):
+  def sectComplete(section):
     completedSections = []
     completedSections.append(section)
+    sorted = completedSections.sort()
+    if len(completedSections) == 1:
+      if completedSections[0] == 3:
+        choice = input(
+          "You take your trasure back to the old man. He accepts it with delight, and asks you to find two more. When you ask him why, he only says that it's for your own good. What direction do you travel next? east, south \n"
+        )
+        if choice == "east":
+          fiveStart()
+        if choice == "south":
+          fourStart()
+        else:
+          invalid(sectComplete)
+      if completedSections[0] == 4:
+        choice = input(
+          "You take your trasure back to the old man. He accepts it with delight, and asks you to find two more. When you ask him why, he only says that it's for your own good. What direction do you travel next? east, west \n"
+        )
+        if choice == "east":
+          fiveStart()
+        if choice == "west":
+          threeStart()
+        else:
+          invalid(sectComplete)
+      if completedSections[0] == 5:
+        choice = input(
+          "You take your trasure back to the old man. He accepts it with delight, and asks you to find two more. When you ask him why, he only says that it's for your own good. What direction do you travel next? west, south \n"
+        )
+        if choice == "west":
+          threeStart()
+        if choice == "south":
+          fourStart()
+        else:
+          invalid(sectComplete)
+    if len(completedSections) == 2:
+      if sorted == [3, 4]:
+        print(
+          "You take your second treasure back to the old man. He sends you off again on your final quest, due east."
+        )
+        fiveStart()
+      if sorted == [4, 5]:
+        print(
+          "You take your second treasure back to the old man. He sends you off again on your final quest, due west."
+        )
+        threeStart()
+      if sorted == [3, 5]:
+        print(
+          "You take your second treasure back to the old man. He sends you off again on your final quest, due south."
+        )
+        fourStart()
     if len(completedSections) == 3:
       print(
         "You take your third piece of treasure back to the old man. He finally gives you the para glider."
       )
-      if gameOver() == True:
+      if hasDied == 1:
         print(
           "He tells you to be careful out there. He winks and smiles at you. Suddenly, he fades away into mist like a ghost. You paraglide down the cliff into the forest to look for something to do.\n"
         )
@@ -66,8 +122,8 @@ def dice(winReq):
         if choice == "quit":
           sys.exit()
         else:
-          invalid(endSection)
-      else:
+          invalid(sectComplete)
+      if hasDied == 0:
         print(
           "He tells you he is the King of Hyrule, and tells you your name is Link.  He says the people you encountered were once your friends, and fought along with you in the war against Calamity Ganon. He put you up to these tests to let you regain the skill and knowledge you once had. Calamity Ganon has overtaken the kingdom, and the King's daughter, princess Zelda, has  been trapped inside Hyrule Castle fighting Ganon for a century. You feel the urge to go help her. You thank him, and paraglide down the cliff, into the unknown.\n"
         )
@@ -79,7 +135,7 @@ def dice(winReq):
         if choice == "quit":
           sys.exit()
         else:
-          invalid(endSection)
+          invalid(sectComplete)
 
 
 #inventory systems: can be edited or listed for various checks
@@ -261,17 +317,23 @@ def twoTree():
 
 #======SECTION THREE======
 
+
 def threeStart():
-  choice = input("You travel westward into the desert plains. It is very hot. You come across an oasis serving water and food. Do you stop for a snack? yes, no \n")
+  choice = input(
+    "You travel westward into the desert plains. It is very hot. You come across an oasis serving water and food. Do you stop for a snack? yes, no \n"
+  )
   if choice == "yes":
-    hp(0,"edit",10)
-    inv(0,"edit", "weapon1", "sword", 0)
-    print("You have some water and berries. You also purchase a broadsword at the shoppe. +10 HP \n")
+    hp(0, "edit", 10)
+    inv(0, "edit", "weapon1", "sword", 0)
+    print(
+      "You have some water and berries. You also purchase a broadsword at the shoppe. +10 HP \n"
+    )
     threeTree()
   if choice == "no":
     threeTree()
   else:
     invalid(threeStart)
+
 
 def threeTree():
   choice = input("What direction shall you go next? north, east, south \n")
@@ -285,83 +347,113 @@ def threeTree():
   else:
     invalid(threeTree)
 
+
 def threeSouth():
-  print("You walk south until you reach a massive dust storm. You cannot see or breathe. You die. \n")
+  print(
+    "You walk south until you reach a massive dust storm. You cannot see or breathe. You die. \n"
+  )
   gameOver(threeStart)
 
+
 def threeNorth():
-  choice = input("You encounter the ruins of an ancient building. It is guarded by monsters that look hungry. What do you do? run back, fight \n")
+  choice = input(
+    "You encounter the ruins of an ancient building. It is guarded by monsters that look hungry. What do you do? run back, fight \n"
+  )
   if choice == "run back":
     threeTree()
   if choice == "fight":
-    if inv(0,"list",0,0,0)[0] == "sword":
+    if inv(0, "list", 0, 0, 0)[0] == "sword":
       roll = dice(5)
-      print("You decide to stay and fight. Good thing you bought that sword, because you only need more than 5 on the dice to win. You rolled: " + str(roll[0]))
+      print(
+        "You decide to stay and fight. Good thing you bought that sword, because you only need more than 5 on the dice to win. You rolled: "
+        + str(roll[0]))
       if roll[1] == True:
         print("You won! -15HP")
-        hp(0,"edit",-15)
+        hp(0, "edit", -15)
         threeIce()
       if roll[1] == False:
         gameOver(threeStart)
-    if inv(0,"list",0,0,0)[0] == "branch":
+    if inv(0, "list", 0, 0, 0)[0] == "branch":
       roll = dice(15)
-      print("You decide to stay and fight. You only have a branch and your bow. You need more than 15 on the dice to win. You rolled: " + str(roll[0]))
+      print(
+        "You decide to stay and fight. You only have a branch and your bow. You need more than 15 on the dice to win. You rolled: "
+        + str(roll[0]))
       if roll[1] == True:
         print("You won! -30HP, -4 arrows")
-        hp(0,"edit",-15)
-        inv(0,"edit","item2","arrow",8)
+        hp(0, "edit", -15)
+        inv(0, "edit", "item2", "arrow", 8)
         threeIce()
       if roll[1] == False:
         gameOver(threeStart)
   else:
     invalid(threeNorth)
 
+
 def threeIce():
-  choice = input("You come across an underground bunker with a small man selling ice.  You ask him where you can find some treasure. He laughs and directs you west to a town called Gerudo. Do you follow her advice? yes, no \n")
+  choice = input(
+    "You come across an underground bunker with a small man selling ice.  You ask him where you can find some treasure. He laughs and directs you west to a town called Gerudo. Do you follow her advice? yes, no \n"
+  )
   if choice == "no":
-    print("You walk south until you reach a massive dust storm. You cannot see or breathe. You die. \n")
+    print(
+      "You walk south until you reach a massive dust storm. You cannot see or breathe. You die. \n"
+    )
     gameOver(threeStart)
   if choice == "yes":
     threeGerudo()
   else:
     invalid(threeIce)
 
+
 def threeGerudo():
-  choice = input("You come across a walled town called Gerudo. It's leader is sitting on a throne straight ahead from the entrance. She notices you and comes running, screaming \"LINK!! YOU'RE BACK!\". She gives you a big hug and asks where you've been. You don't know, and you ask her who she is. She says her name is Urbosa. You ask about the treasure and she asks you to follow her. Do you go with? yes, no \n")
+  choice = input(
+    "You come across a walled town called Gerudo. It's leader is sitting on a throne straight ahead from the entrance. She notices you and comes running, screaming \"LINK!! YOU'RE BACK!\". She gives you a big hug and asks where you've been. You don't know, and you ask her who she is. She says her name is Urbosa. You ask about the treasure and she asks you to follow her. Do you go with? yes, no \n"
+  )
   if choice == "no":
-    print("You run away from the strange woman, back the way you came. You trip and fall into a pit of quicksand. You die. \n")
+    print(
+      "You run away from the strange woman, back the way you came. You trip and fall into a pit of quicksand. You die. \n"
+    )
     gameOver(threeStart)
   if choice == "yes":
     threeBats()
   else:
     invalid(threeGerudo)
 
+
 def threeBats():
-  choice = input("You follow her into a room underground, and she turns on the lights. 10 massive bats hang from the ceiling, and start to get angry. Are you ready to fight? yes,no \n")
+  choice = input(
+    "You follow her into a room underground, and she turns on the lights. 10 massive bats hang from the ceiling, and start to get angry. Are you ready to fight? yes,no \n"
+  )
   if choice == "yes":
-    if inv(0,"list",0,0,0)[0] == "sword":
-      print("Begin boss fight. The dice will roll repeatedly until you either win or die. There are 10 bats to kill, and you need more than 10 per roll to kill one. You currently have " + str(hp(0,"list",0)) + " HP, and Urbosa currently has " + str(hp(2,"list",0)) + " HP. \n")
+    if inv(0, "list", 0, 0, 0)[0] == "sword":
+      print(
+        "Begin boss fight. The dice will roll repeatedly until you either win or die. There are 10 bats to kill, and you need more than 10 per roll to kill one. You currently have "
+        + str(hp(0, "list", 0)) + " HP, and Urbosa currently has " +
+        str(hp(2, "list", 0)) + " HP. \n")
       i = 10
-      while hp(0,"list",0) > 0:
+      while hp(0, "list", 0) > 0:
         while i >= 0:
           roll = dice(10)
           print("You rolled " + str(roll[0]))
           if roll[1] == False:
-            hp(0,"edit",-10)
+            hp(0, "edit", -10)
             print("The bat lives! -10 HP")
           if roll[1] == True:
             print("The bat dies! Remaining bats: " + str(i))
             i = i - 1
-        if hp(0,"list",0) == 0:
+        if hp(0, "list", 0) == 0:
           gameOver(threeStart)
         if i <= 0:
-          print("YOU WIN! You took a total damage of " + str(hp(0,"list",0)) + " HP.")
-          threeEnd()
+          print("YOU WIN! You took a total damage of " +
+                str(hp(0, "list", 0)) + " HP.")
+          print("Urbosa leads you to a chest, and gives you a mysterious orb. She says to give it to the Old Man. You never told her about him, but whatever. You take the orb, and travel back to the old man. \n")
+          sectComplete(3)
   if choice == "no":
     print("You run back to the oasis to prepare.")
     threeStart()
   else:
     invalid(threeBats)
+  
+
 #oneStart() <<< what will actually be called in production
 
 if startingSect == 1:
