@@ -6,11 +6,9 @@
 import random
 import sys
 import time
-def delprint(text,delay_time): 
-  for character in text:      
-    sys.stdout.write(character) 
-    sys.stdout.flush()
-    time.sleep(delay_time)
+
+
+
 #debug settings, remove on completion. allows selection of section, and bypassing RNG.
 
 #cheatsEnabled: 0 = none, 1 = always win dice, 2 = always lose dice
@@ -55,58 +53,58 @@ def dice(winReq):
     diceResult = False
   return roll, diceResult
 
-  #win conditioning
-  def sectComplete(section):
-    completedSections = []
-    completedSections.append(section)
-    sorted = completedSections.sort()
-    if len(completedSections) == 1:
-      if completedSections[0] == 3:
-        choice = input(
-          "You take your trasure back to the old man. He accepts it with delight, and asks you to find two more. When you ask him why, he only says that it's for your own good. What direction do you travel next? east, south \n"
+completedSections = []
+#win conditioning
+def sectComplete(section):
+  completedSections.append(section)
+  sorted = completedSections.sort()
+  if len(completedSections) == 1:
+    if completedSections[0] == 3:
+      choice = input(
+        "You take your treasure back to the old man. He accepts it with delight, and asks you to find two more. When you ask him why, he only says that it's for your own good. What direction do you travel next? east, south \n"
         )
-        if choice == "east":
+      if choice == "east":
           fiveStart()
-        if choice == "south":
+      if choice == "south":
           fourStart()
-        else:
+      else:
           invalid(sectComplete)
-      if completedSections[0] == 4:
-        choice = input(
+    if completedSections[0] == 4:
+      choice = input(
           "You take your trasure back to the old man. He accepts it with delight, and asks you to find two more. When you ask him why, he only says that it's for your own good. What direction do you travel next? east, west \n"
         )
-        if choice == "east":
-          fiveStart()
-        if choice == "west":
-          threeStart()
-        else:
-          invalid(sectComplete)
-      if completedSections[0] == 5:
-        choice = input(
+      if choice == "east":
+        fiveStart()
+      if choice == "west":
+        threeStart()
+      else:
+        invalid(sectComplete)
+    if completedSections[0] == 5:
+      choice = input(
           "You take your trasure back to the old man. He accepts it with delight, and asks you to find two more. When you ask him why, he only says that it's for your own good. What direction do you travel next? west, south \n"
         )
-        if choice == "west":
-          threeStart()
-        if choice == "south":
-          fourStart()
-        else:
-          invalid(sectComplete)
-    if len(completedSections) == 2:
-      if sorted == [3, 4]:
-        print(
+      if choice == "west":
+        threeStart()
+      if choice == "south":
+        fourStart()
+      else:
+        invalid(sectComplete)
+  if len(completedSections) == 2:
+    if sorted == [3, 4]:
+      print(
           "You take your second treasure back to the old man. He sends you off again on your final quest, due east."
         )
-        fiveStart()
-      if sorted == [4, 5]:
-        print(
+      fiveStart()
+    if sorted == [4, 5]:
+      print(
           "You take your second treasure back to the old man. He sends you off again on your final quest, due west."
         )
-        threeStart()
-      if sorted == [3, 5]:
-        print(
+      threeStart()
+    if sorted == [3, 5]:
+      print(
           "You take your second treasure back to the old man. He sends you off again on your final quest, due south."
         )
-        fourStart()
+      fourStart()
     if len(completedSections) == 3:
       print(
         "You take your third piece of treasure back to the old man. He finally gives you the para glider."
@@ -120,7 +118,7 @@ def dice(winReq):
         if choice == "replay":
           oneStart()
         if choice == "quit":
-          sys.exit()
+           sys.exit()
         else:
           invalid(sectComplete)
       if hasDied == 0:
@@ -136,8 +134,9 @@ def dice(winReq):
           sys.exit()
         else:
           invalid(sectComplete)
+    return completedSections
 
-
+sectComplete(3)
 #inventory systems: can be edited or listed for various checks
 # i = character id. matches with order of chars array. e.g. Link = 0
 #due to pos. argument limitations, when listing, specify all irrelvant values as just 0. they will be ignored, but they will make the code run.
@@ -445,14 +444,15 @@ def threeBats():
         if i <= 0:
           print("YOU WIN! You took a total damage of " +
                 str(hp(0, "list", 0)) + " HP.")
-          print("Urbosa leads you to a chest, and gives you a mysterious orb. She says to give it to the Old Man. You never told her about him, but whatever. You take the orb, and travel back to the old man. \n")
+          print(
+            "Urbosa leads you to a chest, and gives you a mysterious orb. She says to give it to the Old Man. You never told her about him, but whatever. You take the orb, and travel back to the old man. \n"
+          )
           sectComplete(3)
   if choice == "no":
     print("You run back to the oasis to prepare.")
     threeStart()
   else:
     invalid(threeBats)
-  
 
 #oneStart() <<< what will actually be called in production
 
