@@ -405,52 +405,41 @@ def breakBoards():
   else:
     invalid(breakBoards)
                           
-### FIX CABIN PATH PART TWO
+# Part two of the cabin path
 def cabinPathPartTwo():
-  while True:
-    path = True
-    if path == False:
-      print(
-        "Path is done")
-      break
-    elif path == True:
-      while True:
-        choosePath = input(
-        "The atmosphere is damp and dusty. To the left is a door frame. On the table in front of you are three cans. You're not sure if they're expired or not. Taking them may or may not be a good idea.\n TAKE \n \n DON'T \n")
-        if choosePath == "break":
-          break
-        elif "take" in choosePath.lower():
-          print(
-            "\n Taking the cans")
-          cans()
-        elif "don't" in choosePath.lower():
-          enterDoor = input(
-            "\nNot taking the cans.")
-        else:
-          choosePath == "break"
-          print("Invalid option \n")
-          break
-        while True:
-          if path == True:
-            enterDoor = input(
-            "Are you going through the doorframe?\n YES \n \n NO \n")
-            if "yes" in enterDoor:
-              print(
-               "entering the door")
-              path = False
-              return True
-            elif "no" in enterDoor:
-              path = False
-              print(
-                "leaving the cabin")
-              return False
-            else:
-              invalid()
-              continue
-        else:
-          break
-    else:
-      continue
+  choosePath = input(
+      "The atmosphere is damp and dusty. To the left is a door frame. On the table in front of you are three cans. You're not sure if they're expired or not. Taking them may or may not be a good idea.\n TAKE \n \n DON'T \n"
+                    )
+
+  if "take" in choosePath.lower():
+    print(
+        "\n Taking the cans"
+            )
+    cans()
+    cabinPathDoorFrame()
+  elif "don't" in choosePath.lower():
+    print(
+      "\nNot taking the cans."
+                      )
+    cabinPathDoorFrame()
+  else:
+    invalid(cabinPathPartTwo)
+
+# Enter the door frame or not?
+def cabinPathDoorFrame():
+  enterDoor = input(
+    "Are you going through the doorframe?\n YES \n \n NO \n"
+                    )
+  if "yes" in enterDoor:
+    print(
+      "entering the door"
+          )
+  elif "no" in enterDoor:
+    print(
+      "leaving the cabin")
+    fiveStart()
+  else:
+    invalid(cabinPathDoorFrame)
 
 # Cans - They deal either -5 or +5 HP
 def cans():
