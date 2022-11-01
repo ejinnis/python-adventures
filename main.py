@@ -333,7 +333,7 @@ def threeGerudo():
 # Start of section 5
 def fiveStart():
   path = input(
-    "\nYou go east towards a large open field.  The air smells crisp and the grass is damp with dew. In the distance, you see a lake and cabin. The cabin seems to be abandoned. Where do you go?\n"
+    "\nYou go east towards a large open field.  The air smells crisp and the grass is damp with dew. In the distance, you see a lake and cabin. The cabin seems to be abandoned. Where do you go?\n \n CABIN \n \n LAKE"
               )
   if path.lower() == "cabin":
     print(
@@ -351,7 +351,7 @@ def fiveStart():
 # Cabin path part uno
 def cabinPath():
   path = input(
-    "\n The cabin door seems to be boarded shut. The windows seem to be boarded shut too. What do you want to do?\n"
+    "\n The cabin door seems to be boarded shut. The windows seem to be boarded shut too. What do you want to do?\n \n BREAK \n \n LEAVE"
               )
   if "break" in path.lower():
     breakBoards()
@@ -366,7 +366,7 @@ def cabinPath():
 def breakBoards():
   # Change "otherweapon"
   breakBoard = input(
-    "\nBreak it with what?\n FIST \n \n OTHERWEAPON \n"
+    "\nBreak it with what?\n \n FIST \n \n OTHERWEAPON \n"
   )
   if "fist" in breakBoard.lower():
                         roll = dice(15)
@@ -434,6 +434,7 @@ def cabinPathDoorFrame():
     print(
       "entering the door"
           )
+    cabinPathEnd()
   elif "no" in enterDoor:
     print(
       "leaving the cabin")
@@ -441,14 +442,47 @@ def cabinPathDoorFrame():
   else:
     invalid(cabinPathDoorFrame)
 
+# End of the cabin path
+def cabinPathEnd():
+  while True:
+    itemList = ["KNIFE", "CLOTHES", "LEAVE"]
+    print(itemList)
+    print(
+      "\nYou enter the doorway. The room seems to be a bedroom. It has a nice set of clothes laid out on the bed, like it was waiting for you. On top of the drawer is a knife. The knife has some strange symbols inscribed on it.\n"
+    )
+    itemGrab = input(
+      "What do you grab? \n \n" + itemList[0] + "\n \n"+ itemList[1] + "\n \n" + itemList[2] + "\n \n"
+    )
+    if "knife" in itemGrab.lower():
+      print(
+        "Grabbing the knife."
+           )
+      # Popping it out doesn't work, figure out why
+      itemList.pop(0)
+      continue
+      # !!!!! MAKE THE KNIFE !!!!!!
+    elif "clothes" in itemGrab.lower():
+      print(
+        "Grabbing the clothes. \n \n + 15HP"
+           )
+      # Popping doesn't work 
+      itemList.pop(1)
+      continue
+    elif "leave" in itemGrab.lower():
+      print(
+        "\nYou leave the cabin. You go back west, coming back to the open field\n"
+           )
+      fiveStart()
+    else:
+      invalid(cabinPathEnd)
+
 # Cans - They deal either -5 or +5 HP
 def cans():
   print("Theses are the cans, make them later")
 
 
-# Lake Path
-
-        
+# Part one of the lake path
+def LakePathPartOne():
       
 #oneStart() <<< what will actually be called in production
 
