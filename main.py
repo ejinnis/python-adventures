@@ -333,7 +333,7 @@ def threeGerudo():
 # Start of section 5
 def fiveStart():
   path = input(
-    "\nYou go east towards a large open field.  The air smells crisp and the grass is damp with dew. In the distance, you see a lake and cabin. The cabin seems to be abandoned. Where do you go?\n \n CABIN \n \n LAKE"
+    "\nYou go east towards a large open field.  The air smells crisp and the grass is damp with dew. In the distance, you see a lake and cabin. The cabin seems to be abandoned. Where do you go?\n \n CABIN \n \n LAKE \n \n"
               )
   if path.lower() == "cabin":
     print(
@@ -460,11 +460,12 @@ def cabinPathEnd():
       # Popping it out doesn't work, figure out why
       itemList.pop(0)
       continue
-      # !!!!! MAKE THE KNIFE !!!!!!
+      # This works, but since it's a loop, the user can keep gaining more and more health, sooooo.
     elif "clothes" in itemGrab.lower():
       print(
         "Grabbing the clothes. \n \n + 15HP"
            )
+      hp(0, edit, 15)
       # Popping doesn't work 
       itemList.pop(1)
       continue
@@ -482,7 +483,169 @@ def cans():
 
 
 # Part one of the lake path
-def LakePathPartOne():
+def lakePath():
+  path = input(
+    "\nIn front of you lay a beautiful disc of blue. The clouds above reflected just as well as the trees beside the lake. In the middle of the lake is a small raft, with something unknown on it. On the shore of the lake, is a small building. \nWhere do you go?\n \n LAKE \n \n BUILDING\n\n"
+              )
+  if "lake" in path.lower():
+    print(
+      "\nGoing swimming in the lake.\n"
+    )
+    swimmingPath()
+  elif "building" in path.lower():
+    print(
+      "\nGoing to the building\n"
+         )
+    buildingPath()
+  else:
+    invalid(lakePath)
+
+# Swimming path, dead end
+def swimmingPath():
+  path = input(
+    "\nYou take a nice swim in the lake, the water feels cool and refreshing. You're feeling kind of tired, you should probably go back to shore.\n\n SWIM \n\n GO BACK"
+              )
+  if "swim" in path.lower():
+    print(
+      "\nDespite feeling tired, you kept swimming. You feel something touch your leg, when. Oh no! A cramp! You try your best to swim back to shore, sucking in more water and more water. You feel as if you're about to make it to shore when something wraps around your leg. You get pulled into the lake by an unknown entity. The last image you see is the water-distorted sky.\n"
+    )
+    gameOver()
+  elif "go back" in path.lower():
+    print(
+      "\nGoing back\n"
+         )
+    lakePath():
+  else:
+    invalid(swimmingPath)
+
+# Building path, this is a one way, no escape
+def buildingPath():
+  path = input(
+    "\nInside the building, which is surprisingly clean, there's a table with a fishing rod. Beside the table is a large raft and paddle.\n\n GRAB FISHING ROD \n\n GRAB RAFT"
+              )
+  if "fishing rod" in path.lower():
+    print(
+      "\nWhat are you gonna do with a fishing rod, huh?\n"
+          )
+    buildingPath()
+  elif "raft" in path.lower():
+    print(
+      "\nYou pull the raft out of the building, and put it on the shore\n"
+          )
+    buildingPathPartTwo()
+  else:
+    invalid(buildingPath)
+
+# Fight the sea monster or not?
+def buildingPathPartTwo():
+  path = input(
+    "\nYou use the raft and go to the other raft on the lake. Once you start to get closer, you see what looks like a person on the raft. The person is unconscious. You bring them on your raft. Waking the person up, you ask them their name. 'Mipha', they answer. You're about to ask Mipha something else, when suddenly, something brushes against your boat. A giant sea monster pops out of the lake! What do you do?\n\n FIGHT \n\n PADDLE AWAY \n\n"
+              )
+  if "fight" in path.lower():
+    print(
+      "\nYou decide to stand your ground and fight the monster\n"
+          )
+    fightSeaMonst()
+  elif "paddle" in path.lower():
+    print(
+      "\nYou start paddling away\n"
+          )
+    paddleAway()
+  else:
+    invalid(buildingPathPartTwo)
+
+# Fighting the sea monster
+def fightSeaMonst():
+  seaMonst = 100
+  mipha = 65
+  print(
+    "\nYou and mipha fight the sea monster\n"
+        )
+  while True:
+    dice(10)
+    # Link's attack
+    if dice[0] >= 10:
+      print(
+        "\nYou rolled a staggering" + dice[0] + " That means you dealt 20 HP to the monster!\n"
+            )
+      seaMonst = seaMonst - int(dice[0])
+    elif dice[0] >= 5:
+      print(
+        "\nYou rolled " + dice[0] + " That means you only dealt 10 HP to the monster!\n"
+            )
+      seaMonst = seaMonst - int(dice[0])
+    elif dice[0] < 5:
+      print(
+        "\nYou rolled a measly" + dice[0] + " That means you didn't even touch the monster. Come on, man.\n"
+            )
+
+    # Mipha's attack
+    dice(10)
+    if dice[0] >= 10:
+      print(
+        "\nMipha rolled a staggering" + dice[0] + " That means she dealt 30 HP to the monster!\n"
+            )
+      seaMonst = seaMonst - int(dice[0])
+    elif dice[0] >= 5:
+      print(
+        "\nMipha rolled " + dice[0] + " That means she dealt 15 HP to the monster!\n"
+            )
+    elif dice[0] < 5:
+      print(
+        "\nMipha rolled a measly " + dice[0] + " That means she didn't even touch the monster.\n"
+            )
+
+    # Sea monsters attack
+    dice(15)
+
+      # High dmg sea monster attack
+    if dice[0] >= 15:
+      print(
+        "\nThe monster hit you both swiftly and hard. -15 HP to both\n"
+           )
+      hp(0, edit, -15)
+      if int(hp(0)) == 0:
+        print(
+          "\nThe sea monster tore you both apart. Womp Womp.\n"
+              )
+      mipha = mipha - 15
+      if mipha <= 0:
+        print("Mipha is dying!!!!!")
+
+      # Low dmg sea mosnter attack
+    elif dice[0] < 15:
+      print(
+        "\nThe monster swings at you wildly, -5 HP to both.\n"
+           )
+      hp(0, edit, -5)
+      if int(hp(0)) == 0:
+        print(
+          "\nThe sea monster tore you both apart. Womp Womp.\n"
+              )
+      mipha = mipha - 5
+      if mipha <= 0:
+        print("Mipha is dying!!!!!")
+
+    #Last if loop, I promise
+    if seaMonst == 0:
+      print(
+        "\nThrashing wildly, the sea monster slithers back into the lake.\n"
+           )
+      sectFiveEnding()
+
+def sectFiveEnding():
+  if int(hp(0)) > 0:
+    if mipha > 0:
+      print(
+        "\nAfter dealing one last blow to the monster, it finally shrinks back into the lake. You and Mipha both survive. 'Finally, I've been waiting to give you this', says Mipha. She gives you some treasure and some apples for good measure. You leave, and she decides to stay.\n"
+      )
+      sectComplete(5)
+  elif int(hp(0)) > 0:
+    if mipha <= 0:
+      print(
+        "\nYou're about to finally kill the sea monster, when it hits Mipha. You hit the sea monster one last time, making it finally slither back into the lake. Mipha, with her last dying breath, gives you the treasure. You leave her lifeless body on the raft.\n"
+      )
+      sectComplete(5)
       
 #oneStart() <<< what will actually be called in production
 
