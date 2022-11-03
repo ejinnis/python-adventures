@@ -5,6 +5,7 @@
 #import le libraries
 import random
 import sys
+import time
 
 #debug settings, remove on completion. allows selection of section, and bypassing RNG.
 
@@ -514,14 +515,14 @@ def swimmingPath():
     print(
       "\nGoing back\n"
          )
-    lakePath():
+    lakePath()
   else:
     invalid(swimmingPath)
 
 # Building path, this is a one way, no escape
 def buildingPath():
   path = input(
-    "\nInside the building, which is surprisingly clean, there's a table with a fishing rod. Beside the table is a large raft and paddle.\n\n GRAB FISHING ROD \n\n GRAB RAFT"
+    "\nInside the building, which is surprisingly clean, there's a table with a fishing rod. Beside the table is a large raft and paddle.\n\n GRAB FISHING ROD \n\n GRAB RAFT\n\n"
               )
   if "fishing rod" in path.lower():
     print(
@@ -558,53 +559,55 @@ def buildingPathPartTwo():
 def fightSeaMonst():
   seaMonst = 100
   mipha = 65
+  round = 1
   print(
     "\nYou and mipha fight the sea monster\n"
         )
+  print("\n\n======ROUND 1======\n\n")
   while True:
-    dice(10)
+    roll = dice(10)
     # Link's attack
-    if dice[0] >= 10:
+    if roll[0] >= 10:
       print(
-        "\nYou rolled a staggering" + dice[0] + " That means you dealt 20 HP to the monster!\n"
+        "\nYou rolled a staggering " + str(roll[0]) + ", That means you dealt 20 HP to the monster!\n"
             )
-      seaMonst = seaMonst - int(dice[0])
-    elif dice[0] >= 5:
+      seaMonst = seaMonst - int(roll[0])
+    elif roll[0] >= 5:
       print(
-        "\nYou rolled " + dice[0] + " That means you only dealt 10 HP to the monster!\n"
+        "\nYou rolled " + str(roll[0]) + ", That means you only dealt 10 HP to the monster!\n"
             )
-      seaMonst = seaMonst - int(dice[0])
-    elif dice[0] < 5:
+      seaMonst = seaMonst - int(roll[0])
+    elif roll[0] < 5:
       print(
-        "\nYou rolled a measly" + dice[0] + " That means you didn't even touch the monster. Come on, man.\n"
+        "\nYou rolled a measly " + str(roll[0]) + ", That means you didn't even touch the monster. Come on, man.\n"
             )
 
     # Mipha's attack
-    dice(10)
-    if dice[0] >= 10:
+    rollTwo = dice(10)
+    if rollTwo[0] >= 10:
       print(
-        "\nMipha rolled a staggering" + dice[0] + " That means she dealt 30 HP to the monster!\n"
+        "\nMipha rolled a staggering " + str(rollTwo[0]) + ", That means she dealt 30 HP to the monster!\n"
             )
-      seaMonst = seaMonst - int(dice[0])
-    elif dice[0] >= 5:
+      seaMonst = seaMonst - int(rollTwo[0])
+    elif rollTwo[0] >= 5:
       print(
-        "\nMipha rolled " + dice[0] + " That means she dealt 15 HP to the monster!\n"
+        "\nMipha rolled " + str(rollTwo[0]) + ", That means she dealt 15 HP to the monster!\n"
             )
-    elif dice[0] < 5:
+    elif rollTwo[0] < 5:
       print(
-        "\nMipha rolled a measly " + dice[0] + " That means she didn't even touch the monster.\n"
+        "\nMipha rolled a measly " + str(rollTwo[0]) + ", That means she didn't even touch the monster.\n"
             )
 
     # Sea monsters attack
-    dice(15)
+    rollThree = dice(15)
 
       # High dmg sea monster attack
-    if dice[0] >= 15:
+    if rollThree[0] >= 15:
       print(
         "\nThe monster hit you both swiftly and hard. -15 HP to both\n"
            )
-      hp(0, edit, -15)
-      if int(hp(0)) == 0:
+      hp(0, "edit", -15)
+      if int(hp(0, "list",0)) == 0:
         print(
           "\nThe sea monster tore you both apart. Womp Womp.\n"
               )
@@ -613,12 +616,12 @@ def fightSeaMonst():
         print("Mipha is dying!!!!!")
 
       # Low dmg sea mosnter attack
-    elif dice[0] < 15:
+    elif rollThree[0] < 15:
       print(
         "\nThe monster swings at you wildly, -5 HP to both.\n"
            )
-      hp(0, edit, -5)
-      if int(hp(0)) == 0:
+      hp(0, "edit", -5)
+      if int(hp(0,"list",0)) == 0:
         print(
           "\nThe sea monster tore you both apart. Womp Womp.\n"
               )
@@ -626,26 +629,34 @@ def fightSeaMonst():
       if mipha <= 0:
         print("Mipha is dying!!!!!")
 
-    #Last if loop, I promise
-    if seaMonst == 0:
+    round = round + 1
+    print("\n\nNext round here we go!\n\n")
+    time.sleep(5)
+    print("MONSTER HEALTH = " + str(seaMonst))
+    print("\n\n====== ROUND " + str(round) + " ======")
+
+
+
+    #Ending of section 5, I would've put it in it's own function, but this is easier.
+    if seaMonst <= 0:
       print(
         "\nThrashing wildly, the sea monster slithers back into the lake.\n"
            )
-      sectFiveEnding()
+      if int(hp(0,"list",0)) > 0:
+        if mipha > 0:
+          print(
+            "\nAfter dealing one last blow to the monster, it finally shrinks back into the lake. You and Mipha both survive. 'Finally, I've been waiting to give you this', says Mipha. She gives you some treasure and some apples for good measure. You leave, and she decides to stay.\n"
+              )
+          sectComplete(5)
+      elif int(hp(0,"list",0)) > 0:
+        if mipha <= 0:
+          print(
+            "\nYou're about to finally kill the sea monster, when it hits Mipha. You hit the sea monster one last time, making it finally slither back into the lake. Mipha, with her last dying breath, gives you the treasure. You leave her lifeless body on the raft.\n"
+                )
+          sectComplete(5)
+    else:
+      continue
 
-def sectFiveEnding():
-  if int(hp(0)) > 0:
-    if mipha > 0:
-      print(
-        "\nAfter dealing one last blow to the monster, it finally shrinks back into the lake. You and Mipha both survive. 'Finally, I've been waiting to give you this', says Mipha. She gives you some treasure and some apples for good measure. You leave, and she decides to stay.\n"
-      )
-      sectComplete(5)
-  elif int(hp(0)) > 0:
-    if mipha <= 0:
-      print(
-        "\nYou're about to finally kill the sea monster, when it hits Mipha. You hit the sea monster one last time, making it finally slither back into the lake. Mipha, with her last dying breath, gives you the treasure. You leave her lifeless body on the raft.\n"
-      )
-      sectComplete(5)
       
 #oneStart() <<< what will actually be called in production
 
